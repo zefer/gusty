@@ -17,11 +17,11 @@ class App < Sinatra::Base
   end
 
   configure :staging do
-  	Ohm.connect(url: ENV["REDIS_URL"])
+    Ohm.connect(url: ENV["REDIS_URL"])
   end
 
   configure :production do
-  	Ohm.connect(url: ENV["REDIS_URL"])
+    Ohm.connect(url: ENV["REDIS_URL"])
   end
 
   set :mustache, {
@@ -39,7 +39,7 @@ class App < Sinatra::Base
     if current_user
       mustache :home
     else
-    	mustache :index
+      mustache :index
     end
   end
 
@@ -49,8 +49,8 @@ class App < Sinatra::Base
   end
 
   twitter_auth_callback = lambda do
-  	# https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
-  	auth = request.env['omniauth.auth']
+    # https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
+    auth = request.env['omniauth.auth']
   	
     user = User.find(username: auth['info']['nickname']).first || User.create_with_omniauth(auth) if user.nil?
 
