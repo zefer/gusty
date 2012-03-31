@@ -14,15 +14,15 @@ class App < Sinatra::Base
   load("./config/local_env.rb") if File.exists?("./config/local_env.rb")
 
   configure :development do
-	end
+  end
 
-	configure :staging do
+  configure :staging do
   	Ohm.connect(url: ENV["REDIS_URL"])
-	end
+  end
 
   configure :production do
   	Ohm.connect(url: ENV["REDIS_URL"])
-	end
+  end
 
   set :mustache, {
     views:     './views',
@@ -37,33 +37,33 @@ class App < Sinatra::Base
   get '/' do
     @title = "Gusty: An experiment"
     if current_user
-	    mustache :home
-	  else
-	  	mustache :index
-	  end
+      mustache :home
+    else
+    	mustache :index
+    end
   end
 
   get "/logout" do
-	  session['username'] = nil
-	  redirect '/'
-	end
+    session['username'] = nil
+    redirect '/'
+  end
 
   twitter_auth_callback = lambda do
   	# https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
   	auth = request.env['omniauth.auth']
-		
+  	
     user = User.find(username: auth['info']['nickname']).first || User.create_with_omniauth(auth) if user.nil?
 
-	  session['username'] = user.username
-	  redirect "/"
-	end
-	get  '/auth/:name/callback', &twitter_auth_callback
-	post '/auth/:name/callback', &twitter_auth_callback
+    session['username'] = user.username
+    redirect "/"
+  end
+  get  '/auth/:name/callback', &twitter_auth_callback
+  post '/auth/:name/callback', &twitter_auth_callback
 
-	helpers do
-	  def current_user
-	    @current_user ||= User.find(username: session['username']).first if session['username']
-	  end
-	end
+  helpers do
+    def current_user
+      @current_user ||= User.find(username: session['username']).first if session['username']
+    end
+  end
 
 end
